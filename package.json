@@ -10,10 +10,13 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@distube/ytdl-core": "^4.14.4",
     "@mtproto/core": "6.3.0",
+    "axios": "^1.7.7",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "googleapis": "^144.0.0",
     "input": "^1.0.1",
     "prebuilt-tdlib": "^0.1008034.0",
     "tdl": "^8.0.1"
