@@ -2,55 +2,55 @@ const fs = require('fs');
 const { getClient } = require('./client');
 
 const client = getClient();
-const sendMessage = async function (audioBuffer, title, duration) {
-  const data = await client.invoke({
-    _: 'sendMessage',
-    chat_id: 6151371160, // Replace with the actual chat ID
-    input_message_content: {
-      _: 'inputMessageAudio',
-      audio: {
-        _: 'inputFileGenerated', // Use 'inputFileGenerated' to send from buffer
-        original_path: title, // You can use the title as the original path
-        conversion: '', // Conversion string can be empty
-        data: audioBuffer, // Send the audio buffer directly
-      },
-      duration, // Optionally specify the duration of the audio in seconds
-      title, // Optionally specify a title for the audio
-    },
-  });
-};
-// const sendMessage = async function (path, title, duration) {
-//   console.log('fineshed start sending audio  2222');
-
+// const sendMessage = async function (audioBuffer, title, duration) {
 //   const data = await client.invoke({
 //     _: 'sendMessage',
 //     chat_id: 6151371160, // Replace with the actual chat ID
 //     input_message_content: {
 //       _: 'inputMessageAudio',
 //       audio: {
-//         _: 'inputFileLocal',
-//         path, // Use the path to the audio file
+//         _: 'inputFileGenerated', // Use 'inputFileGenerated' to send from buffer
+//         original_path: title, // You can use the title as the original path
+//         conversion: '', // Conversion string can be empty
+//         data: audioBuffer, // Send the audio buffer directly
 //       },
 //       duration, // Optionally specify the duration of the audio in seconds
 //       title, // Optionally specify a title for the audio
 //     },
 //   });
 // };
+const sendMessage = async function (path, title, duration) {
+  console.log('fineshed start sending audio  2222');
+
+  const data = await client.invoke({
+    _: 'sendMessage',
+    chat_id: 6151371160, // Replace with the actual chat ID
+    input_message_content: {
+      _: 'inputMessageAudio',
+      audio: {
+        _: 'inputFileLocal',
+        path, // Use the path to the audio file
+      },
+      duration, // Optionally specify the duration of the audio in seconds
+      title, // Optionally specify a title for the audio
+    },
+  });
+};
 
 // console.log('fineshed start sending audio  33333');
 
 // await client.invoke({
-//   _: "sendMessage",
-//   chat_id: "id", // Replace with the actual chat ID
+//   _: 'sendMessage',
+//   chat_id: 'id', // Replace with the actual chat ID
 //   input_message_content: {
-//     _: "inputMessageAudio",
+//     _: 'inputMessageAudio',
 //     audio: {
-//       _: "inputFileLocal",
+//       _: 'inputFileLocal',
 //       path: audioFile, // Use the path to the audio file
 //     },
 //     duration: 0, // Optionally specify the duration of the audio in seconds
-//     title: "Audio Title", // Optionally specify a title for the audio
-//     performer: "Performer Name", // Optionally specify a performer name
+//     title: 'Audio Title', // Optionally specify a title for the audio
+//     performer: 'Performer Name', // Optionally specify a performer name
 //   },
 // });
 
@@ -81,14 +81,14 @@ const sendMessage = async function (audioBuffer, title, duration) {
 //   });
 // };
 
-// function streamToBuffer(stream) {
-//   return new Promise((resolve, reject) => {
-//     const chunks = [];
-//     stream.on('data', (chunk) => chunks.push(chunk));
-//     stream.on('end', () => resolve(Buffer.concat(chunks)));
-//     stream.on('error', reject);
-//   });
-// }
+function streamToBuffer(stream) {
+  return new Promise((resolve, reject) => {
+    const chunks = [];
+    stream.on('data', (chunk) => chunks.push(chunk));
+    stream.on('end', () => resolve(Buffer.concat(chunks)));
+    stream.on('error', reject);
+  });
+}
 
 async function streamToBuffer(readableStream) {
   return new Promise((resolve, reject) => {
