@@ -1,0 +1,21 @@
+{
+  "name": "mt",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@mtproto/core": "6.3.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "input": "^1.0.1",
+    "prebuilt-tdlib": "^0.1008034.0",
+    "tdl": "^8.0.1"
+  }
+}
