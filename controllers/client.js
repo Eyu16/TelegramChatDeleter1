@@ -19,6 +19,7 @@ const createClient = function () {
         _: 'getChat',
         chat_id: update.chat_id,
       });
+      console.log(chat);
       if (
         chatHistory.messages[0]?.content._ === 'messageContactRegistered' ||
         chatHistory.messages[0]?.content?.text?.text?.toLowerCase() === 'clear'
