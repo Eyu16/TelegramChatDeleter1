@@ -19,12 +19,12 @@ const createClient = function () {
         _: 'getChat',
         chat_id: update.chat_id,
       });
-      console.log(chat);
+      // console.log(chatHistory.messages[0]?.content?.text?.text?.toLowerCase());
       if (
         chatHistory.messages[0]?.content._ === 'messageContactRegistered' ||
         chatHistory.messages[0]?.content?.text?.text?.toLowerCase() === 'clear'
       ) {
-        console.log(update.chat_id);
+        console.log(chat);
         console.log('updated lastchat deleting registered');
         await client.invoke({
           _: 'deleteChat',
