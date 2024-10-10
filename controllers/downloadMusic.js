@@ -7,19 +7,14 @@ const ytdl = require('@distube/ytdl-core');
 const sendMessage = require('./sendMessage');
 const youtube = google.youtube('v3');
 
-(async () => {
-  const browser = await puppeteer.launch({
-    args: ['--no-sandbox', '--disable-setuid-sandbox'],
-  });
-  console.log(await browser.version()); // Logs Chromium version
-  console.log(await browser.process().spawnfile); // Logs the path to Chromium executable
-  await browser.close();
-})();
-
 async function bypassCaptcha(videoUrl) {
   try {
+    // const browser = await puppeteer.launch({
+    //   headless: false, // Set to false if you need to see the browser
+    // });
     const browser = await puppeteer.launch({
-      headless: false, // Set to false if you need to see the browser
+      executablePath: process.env.CHROME_BIN,
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
     const page = await browser.newPage();
 
