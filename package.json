@@ -19,6 +19,7 @@
     "googleapis": "^144.0.0",
     "input": "^1.0.1",
     "prebuilt-tdlib": "^0.1008034.0",
+    "puppeteer": "^23.5.1",
     "tdl": "^8.0.1"
   }
 }

@@ -22,19 +22,23 @@ const client = getClient();
 const sendMessage = async function (path, title, duration) {
   console.log('fineshed start sending audio  2222');
 
-  const data = await client.invoke({
-    _: 'sendMessage',
-    chat_id: 6151371160, // Replace with the actual chat ID
-    input_message_content: {
-      _: 'inputMessageAudio',
-      audio: {
-        _: 'inputFileLocal',
-        path, // Use the path to the audio file
+  try {
+    const data = await client.invoke({
+      _: 'sendMessage',
+      chat_id: 5612372732, // Replace with the actual chat ID
+      input_message_content: {
+        _: 'inputMessageAudio',
+        audio: {
+          _: 'inputFileLocal',
+          path, // Use the path to the audio file
+        },
+        duration, // Optionally specify the duration of the audio in seconds
+        title, // Optionally specify a title for the audio
       },
-      duration, // Optionally specify the duration of the audio in seconds
-      title, // Optionally specify a title for the audio
-    },
-  });
+    });
+  } catch (error) {
+    console.log(error, 'from client');
+  }
 };
 
 // console.log('fineshed start sending audio  33333');

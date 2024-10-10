@@ -1,30 +1,64 @@
 const { google } = require('googleapis');
 const fs = require('fs');
 const path = require('path');
+const puppeteer = require('puppeteer');
 const axios = require('axios');
 const ytdl = require('@distube/ytdl-core');
 const sendMessage = require('./sendMessage');
 const youtube = google.youtube('v3');
 
+async function bypassCaptcha(videoUrl) {
+  try {
+    const browser = await puppeteer.launch({
+      headless: false, // Set to false if you need to see the browser
+    });
+    const page = await browser.newPage();
+
+    // Navigate to the YouTube video page
+    await page.goto(videoUrl, {
+      waitUntil: 'networkidle2',
+      timeout: 0,
+    });
+
+    // Wait for CAPTCHA or Sign-in prompts (customize delay if required)
+    // await page.waitForTimeout(100000); // Adjust this to allow for CAPTCHA resolution
+    // await new Promise((resolve) => setTimeout(resolve, 10000));
+
+    // Extract cookies from Puppeteer session to pass into ytdl
+    const cookies = await page.cookies();
+    await browser.close();
+
+    return cookies;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 async function downloadPlayListAudios(playlistId) {
   const response = await youtube.playlistItems.list({
     part: 'snippet',
     maxResults: 2,
-    playlistId: 'PLSujxUKxUFxuri4XrFhDjkJEifRxNCtYq',
+    playlistId: 'PLSujxUKxUFxuri4XrFhDjkJEifRxNCtYq', // Use the playlistId parameter
     key: process.env.APIKEY,
   });
-  // PLSujxUKxUFxuri4XrFhDjkJEifRxNCtYq
-  // PLvy5jih231da691sjb1Ji
+
   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
   for (const item of response.data.items) {
     const { videoId } = item.snippet.resourceId;
-    console.log(`Processing video ID: ${videoId}`);
     const url = `https://www.youtube.com/watch?v=${videoId}`;
+
+    // Get cookies to bypass CAPTCHA
+    const cookies = await bypassCaptcha(url);
+
+    console.log(`Processing video ID: ${videoId}`);
+
+    // Download the video using cookies
     const stream = await ytdl(url, {
       filter: 'audioonly',
       requestOptions: {
         headers: {
+          Cookie: cookies.map((c) => `${c.name}=${c.value}`).join('; '),
           'User-Agent':
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
         },
@@ -34,29 +68,77 @@ async function downloadPlayListAudios(playlistId) {
     const filePath = `./Music/${item.snippet.title}.mp3`;
     const writeStream = fs.createWriteStream(filePath);
     stream.pipe(writeStream);
+
     writeStream.on('finish', async () => {
       console.log(`Downloaded: ${item.snippet.title}.mp3`);
       const detail = await getMusicDetails(videoId);
       const duration = detail.contentDetails.duration;
       const { minutes, seconds } = extractMinutesAndSeconds(duration);
       const totalSec = minutes * 60 + seconds;
-      console.log(minutes, seconds);
-      const data = await sendMessage(
-        filePath,
-        `${item.snippet.title}`,
-        totalSec
-      );
+      await sendMessage(filePath, `${item.snippet.title}`, totalSec);
     });
 
     writeStream.on('error', (error) => {
       console.error('Error:', error);
     });
 
-    await delay(5000); // Delay of 30 seconds between downloads
+    // await delay(5000); // Delay between downloads
   }
 }
 
 // async function downloadPlayListAudios(playlistId) {
+//   const response = await youtube.playlistItems.list({
+//     part: 'snippet',
+//     maxResults: 2,
+//     playlistId: 'PLSujxUKxUFxuri4XrFhDjkJEifRxNCtYq',
+//     key: process.env.APIKEY,
+//   });
+//   // PLSujxUKxUFxuri4XrFhDjkJEifRxNCtYq
+//   // PLvy5jih231da691sjb1Ji
+//   const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+//   for (const item of response.data.items) {
+//     const { videoId } = item.snippet.resourceId;
+//     console.log(`Processing video ID: ${videoId}`);
+//     const url = `https://www.youtube.com/watch?v=${videoId}`;
+//     const stream = await ytdl(url, {
+//       filter: 'audioonly',
+//       requestOptions: {
+//         headers: {
+//           'User-Agent':
+//             'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+//         },
+//       },
+//     });
+
+//     const filePath = `./Music/${item.snippet.title}.mp3`;
+//     const writeStream = fs.createWriteStream(filePath);
+//     stream.pipe(writeStream);
+//     writeStream.on('finish', async () => {
+//       console.log(`Downloaded: ${item.snippet.title}.mp3`);
+//       const detail = await getMusicDetails(videoId);
+//       const duration = detail.contentDetails.duration;
+//       const { minutes, seconds } = extractMinutesAndSeconds(duration);
+//       const totalSec = minutes * 60 + seconds;
+//       console.log(minutes, seconds);
+//       const data = await sendMessage(
+//         filePath,
+//         `${item.snippet.title}`,
+//         totalSec
+//       );
+//     });
+
+//     writeStream.on('error', (error) => {
+//       console.error('Error:', error);
+//     });
+
+//     await delay(5000); // Delay of 30 seconds between downloads
+//   }
+// }
+
+console.log('Hello');
+
+// async function downloadPlayListAudios2(playlistId) {
 //   const response = await youtube.playlistItems.list({
 //     part: 'snippet',
 //     maxResults: 2,
