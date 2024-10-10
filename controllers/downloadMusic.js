@@ -14,7 +14,7 @@ async function bypassCaptcha(videoUrl) {
     // });
     // console.log(process.env.CHROME_BIN, 'process variable');
     const browser = await puppeteer.launch({
-      executablePath: '/opt/render/.cache/puppeteer',
+      executablePath: '/opt/render/.cache/puppeteer/chrome',
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
     const page = await browser.newPage();
