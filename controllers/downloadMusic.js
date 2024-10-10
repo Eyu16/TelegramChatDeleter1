@@ -7,6 +7,15 @@ const ytdl = require('@distube/ytdl-core');
 const sendMessage = require('./sendMessage');
 const youtube = google.youtube('v3');
 
+const chromePath = '/opt/render/.cache/puppeteer/chrome/';
+fs.readdir(chromePath, (err, files) => {
+  if (err) {
+    console.error('Error reading directory:', err);
+    return;
+  }
+  console.log('Available versions:', files); // This will list all the version folders
+});
+
 async function bypassCaptcha(videoUrl) {
   try {
     // const browser = await puppeteer.launch({
