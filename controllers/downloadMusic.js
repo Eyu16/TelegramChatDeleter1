@@ -12,8 +12,11 @@ async function bypassCaptcha(videoUrl) {
     // const browser = await puppeteer.launch({
     //   headless: false, // Set to false if you need to see the browser
     // });
+    console.log(process.env.CHROME_BIN, 'process variable');
     const browser = await puppeteer.launch({
-      executablePath: process.env.CHROME_BIN,
+      executablePath:
+        process.env.CHROME_BIN ||
+        '/opt/render/.cache/puppeteer/chrome/linux-129.0.6668.89/chrome',
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
     const page = await browser.newPage();
