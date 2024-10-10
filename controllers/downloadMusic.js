@@ -14,9 +14,7 @@ async function bypassCaptcha(videoUrl) {
     // });
     console.log(process.env.CHROME_BIN, 'process variable');
     const browser = await puppeteer.launch({
-      executablePath:
-        process.env.CHROME_BIN ||
-        '/opt/render/.cache/puppeteer/chrome/linux-129.0.6668.89/chrome',
+      executablePath: '/usr/bin/chromium',
       args: ['--no-sandbox', '--disable-setuid-sandbox'],
     });
     const page = await browser.newPage();
